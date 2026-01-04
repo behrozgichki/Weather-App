@@ -1,7 +1,7 @@
 
 
-const api = "https://api.openweathermap.org/data/2.5/weather?q=tokyo&appid=ac9e8f6b0504224f697f73b9256a39b1&units=metric"
-const apiKey = "ac9e8f6b0504224f697f73b9256a39b1"
+const api = "https://api.weatherapi.com/v1/current.json?key=7fd42d84a2a64ea4920164525260301&q=London&aqi=yes"
+const apiKey = "7fd42d84a2a64ea4920164525260301"
 
 const form = document.querySelector("#form")
 const div = document.querySelector("#container")
@@ -12,15 +12,22 @@ form.addEventListener("submit", (data) => {
     data.preventDefault()
     console.log(input.value);
 
-    {/* <></> */ }
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${input.value}&appid=${apiKey}&units=metric`)
+    fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${input.value}&aqi=yes`)
         .then((res) => res.json())
         .then((res) => {
             console.log(res);
-            const cityDateTime = new Date((res.dt + res.timezone) * 1000);
-            div.innerHTML += `<h1>${res.name} , ${res.sys.country}</h1>
-        <h1>${res.main.temp + " °C"}</h1>
-        <p>${cityDateTime.toLocaleString()}</p>`
+            div.innerHTML += `<div class="card-left">
+          <div class="city">${res.location.name}</div>
+          <div class="date">
+            ${res.location.localtime}, ${res.location.country}
+          </div>
+          <div class="temp">${res.current.temp_c}°C</div>
+          <div class="condition">${res.current.condition.text}</div>
+        </div>
+
+        <div class="card-right">
+          <img src="https:${res.current.condition.icon}" alt="icon">
+        </div>`
 
         })
         .catch((err) => {
