@@ -7,31 +7,42 @@ const form = document.querySelector("#form")
 const div = document.querySelector("#container")
 const input = document.querySelector("#input")
 
+const cities = []
 
-form.addEventListener("submit", (data) => {
-    data.preventDefault()
+form.addEventListener("submit", (e) => {
+    e.preventDefault()
     console.log(input.value);
 
     fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${input.value}&aqi=yes`)
         .then((res) => res.json())
         .then((res) => {
             console.log(res);
-            div.innerHTML += `<div class="card-left">
-          <div class="city">${res.location.name}</div>
-          <div class="date">
-            ${res.location.localtime}, ${res.location.country}
-          </div>
-          <div class="temp">${res.current.temp_c}°C</div>
-          <div class="condition">${res.current.condition.text}</div>
-        </div>
-
-        <div class="card-right">
-          <img src="https:${res.current.condition.icon}" alt="icon">
-        </div>`
-
+            cities.unshift(res)
+             renderCities();
+      input.value = "";
         })
         .catch((err) => {
             console.error(err);
 
         })
 })
+function renderCities() {
+  div.innerHTML = "";
+
+  for (let i = 0; i < cities.length; i++) {
+    div.innerHTML+= `<div class="card-left">
+          <div class="city">${cities[i].location.name}</div>
+          <div class="date">
+            ${cities[i].location.localtime}, ${cities[i].location.country}
+          </div>
+          <div class="temp">${cities[i].current.temp_c}°C</div>
+          <div class="condition">${cities[i].current.condition.text}</div>
+        </div>
+
+        <div class="card-right">
+          <img src="https:${cities[i].current.condition.icon}" alt="icon">
+        </div>`
+  }
+
+
+}
